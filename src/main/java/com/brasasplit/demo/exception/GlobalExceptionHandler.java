@@ -25,4 +25,13 @@ public class GlobalExceptionHandler {
         // o servidor retorna que nao conseguiu processar a requisicao
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errors);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("erro", ex.getMessage());
+
+        // 409 pra conflito, como email ja existente
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
 }

@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface UsuarioRepository extends MongoRepository <Usuario, String> {
     //optional permite o retorno de um usuario ou de nenhum usuario para ser tratado pela controller
     Optional<Usuario> findByEmail(String email);
+    boolean existsByEmail(String email);
 }

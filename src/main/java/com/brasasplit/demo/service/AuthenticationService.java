@@ -5,6 +5,7 @@ import com.brasasplit.demo.dto.AuthenticationRequest;
 import com.brasasplit.demo.dto.AuthenticationResponse;
 import com.brasasplit.demo.dto.RegisterRequest;
 import com.brasasplit.demo.repository.UsuarioRepository;
+import com.brasasplit.demo.util.AuthConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,10 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
 
     public AuthenticationResponse registrar(RegisterRequest request){
+        //refatorar para remover a responsabilidade de conversao daqui
+        if (usuarioRepository.existsByEmail(request.email())) {
+            throw new IllegalArgumentException(AuthConstants.MSG_EMAIL_EM_USO);
+        }
         Usuario usuario  = Usuario.builder()
                 .nome(request.nome())
                 .email(request.email())

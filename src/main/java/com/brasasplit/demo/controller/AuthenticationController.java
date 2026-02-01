@@ -4,6 +4,7 @@ import com.brasasplit.demo.dto.AuthenticationRequest;
 import com.brasasplit.demo.dto.AuthenticationResponse;
 import com.brasasplit.demo.dto.RegisterRequest;
 import com.brasasplit.demo.service.AuthenticationService;
+import com.brasasplit.demo.util.AuthConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,7 +29,12 @@ public class AuthenticationController {
     @PostMapping("/register")
     @Operation(summary = "Cadastro de usuário", description = "Realiza o cadastro de usuário e retorna um token JWT como resposta")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuário criado com sucesso"),
+            @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso"),
+            @ApiResponse(responseCode = "409", description = "Email já cadastrado",
+                    content = @Content(schema = @Schema(
+                            type = "object",
+                            example = AuthConstants.JSON_ERRO_EMAIL
+                    ))),
             @ApiResponse(responseCode = "422", description = "Erro de validação dos campos de entrada",
                     content = @Content(schema = @Schema(type = "object", example = "{\"email\": \"Formato inválido\", \"senha\": \"Senha fraca\"}")))
     })
