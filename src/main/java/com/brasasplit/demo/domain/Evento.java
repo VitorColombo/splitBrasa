@@ -26,5 +26,5 @@ public class Evento extends BaseEntity {
     @Builder.Default
     private List<Participante> participantes = new ArrayList<>();
     @Builder.Default
-    private List<ItemDespesa> despesas = new ArrayList<>();
+    private List<Compra> compras = new ArrayList<>();
 }

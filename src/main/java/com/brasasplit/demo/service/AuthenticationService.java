@@ -1,9 +1,8 @@
 package com.brasasplit.demo.service;
 
 import com.brasasplit.demo.domain.Usuario;
-import com.brasasplit.demo.dto.AuthenticationRequest;
-import com.brasasplit.demo.dto.AuthenticationResponse;
-import com.brasasplit.demo.dto.RegisterRequest;
+import com.brasasplit.demo.dto.AuthenticationRequestDTO;
+import com.brasasplit.demo.dto.AuthenticationResponseDTO;
 import com.brasasplit.demo.repository.UsuarioRepository;
 import com.brasasplit.demo.util.AuthConstants;
 import lombok.RequiredArgsConstructor;
@@ -20,25 +19,22 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationResponse registrar(RegisterRequest request){
-        //refatorar para remover a responsabilidade de conversao daqui
-        if (usuarioRepository.existsByEmail(request.email())) {
+    public AuthenticationResponseDTO registrar(Usuario usuario){
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
             throw new IllegalArgumentException(AuthConstants.MSG_EMAIL_EM_USO);
         }
-        Usuario usuario  = Usuario.builder()
-                .nome(request.nome())
-                .email(request.email())
-                .senha(passwordEncoder.encode(request.senha()))
-                .build();
+
+        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+        usuario.setSenha(senhaCriptografada);
 
         usuarioRepository.save(usuario);
 
         //permite o login direto apos o cadastro
         var jwtToken = jwtService.generateToken(usuario);
-        return new AuthenticationResponse(jwtToken);
+        return new AuthenticationResponseDTO(jwtToken);
     }
 
-    public AuthenticationResponse logar(AuthenticationRequest request){
+    public AuthenticationResponseDTO logar(AuthenticationRequestDTO request){
         //o spring security faz a validacao do usuario e senha
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -51,6 +47,6 @@ public class AuthenticationService {
                 .orElseThrow();
 
         var jwtToken = jwtService.generateToken(usuario);
-        return new AuthenticationResponse(jwtToken);
+        return new AuthenticationResponseDTO(jwtToken);
     }
 }

@@ -1,8 +1,10 @@
 package com.brasasplit.demo.controller;
 
-import com.brasasplit.demo.dto.AuthenticationRequest;
-import com.brasasplit.demo.dto.AuthenticationResponse;
-import com.brasasplit.demo.dto.RegisterRequest;
+import com.brasasplit.demo.domain.Usuario;
+import com.brasasplit.demo.dto.AuthenticationRequestDTO;
+import com.brasasplit.demo.dto.AuthenticationResponseDTO;
+import com.brasasplit.demo.dto.RegisterRequestDTO;
+import com.brasasplit.demo.mapper.UsuarioMapper;
 import com.brasasplit.demo.service.AuthenticationService;
 import com.brasasplit.demo.util.AuthConstants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Autenticação", description = "Login e registro de usuários")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
+    private final UsuarioMapper mapper;
 
     @PostMapping("/register")
     @Operation(summary = "Cadastro de usuário", description = "Realiza o cadastro de usuário e retorna um token JWT como resposta")
@@ -39,13 +42,15 @@ public class AuthenticationController {
                     content = @Content(schema = @Schema(type = "object", example = "{\"email\": \"Formato inválido\", \"senha\": \"Senha fraca\"}")))
     })
     //o valid obriga que as regras do RegisterRequest sejam seguidas
-    public ResponseEntity<AuthenticationResponse> registrar(@RequestBody @Valid RegisterRequest request) {
-        return ResponseEntity.ok(authenticationService.registrar(request));
+    public ResponseEntity<AuthenticationResponseDTO> registrar(@RequestBody @Valid RegisterRequestDTO request) {
+        Usuario usuario = mapper.toEntity(request);
+
+        return ResponseEntity.ok(authenticationService.registrar(usuario));
     }
 
     @PostMapping("/login")
     @Operation(summary = "Login de usuário", description = "Realiza o login do usuário e retorna um token JWT como resposta")
-    public ResponseEntity<AuthenticationResponse> logar(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponseDTO> logar(@RequestBody AuthenticationRequestDTO request) {
         return ResponseEntity.ok(authenticationService.logar(request));
     }
 }

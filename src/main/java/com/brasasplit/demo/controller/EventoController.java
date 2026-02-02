@@ -1,8 +1,11 @@
 package com.brasasplit.demo.controller;
 
+import com.brasasplit.demo.domain.Compra;
 import com.brasasplit.demo.domain.Evento;
-import com.brasasplit.demo.dto.EventoRequest;
-import com.brasasplit.demo.dto.EventoResponse;
+import com.brasasplit.demo.dto.CompraRequestDTO;
+import com.brasasplit.demo.dto.CompraResponseDTO;
+import com.brasasplit.demo.dto.EventoRequestDTO;
+import com.brasasplit.demo.dto.EventoResponseDTO;
 import com.brasasplit.demo.mapper.EventoMapper;
 import com.brasasplit.demo.service.EventoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,13 +14,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/eventos")
@@ -38,15 +39,41 @@ public class EventoController {
                             "  \"local\": \"Local inválido\"\n" +
                             "}")))
     })
-    public ResponseEntity<EventoResponse> criar(@RequestBody EventoRequest request){
-        //dto de request->entidade
+    public ResponseEntity<EventoResponseDTO> criar(@RequestBody EventoRequestDTO request){
         Evento eventoParaSalvar = mapper.toEntity(request);
-        // salvar entidade
         Evento eventoCriado = eventoService.criarEvento(eventoParaSalvar);
-        // entidade->dto de resposta
-        EventoResponse resposta = mapper.toResponse(eventoCriado);
+        EventoResponseDTO resposta = mapper.toResponse(eventoCriado);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(resposta);
+    }
+
+    @PostMapping("/{id}/compras")
+    @Operation(summary = "Adicionar Compra", description = "Adiciona uma nova compra com itens ao evento")
+    public ResponseEntity<EventoResponseDTO> adicionarCompra(@PathVariable String id, @RequestBody @Valid CompraRequestDTO request) {
+        Compra compraDomain = mapper.toCompraDomain(request);
+
+        Evento eventoAtualizado = eventoService.adicionarCompra(id, compraDomain);
+
+        EventoResponseDTO response = mapper.toResponse(eventoAtualizado);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @DeleteMapping("/{eventoId}/compras/{compraId}")
+    @Operation(summary= "Remover Compra", description = "Remove uma compra de um evento pelo ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Remoção aceita, retorna o novo estado da entidade"),
+            @ApiResponse(responseCode = "404", description = "Evento ou compra não encontrados pelo id",
+                    content = @Content(schema = @Schema(type = "object", example = "{\n" +
+                    "  \"erro\": \"Evento/Compra não encontrado com id: xxxxxxxx\",\n" +
+                    "}")))
+    })
+    public ResponseEntity<EventoResponseDTO> removerCompra(@PathVariable String eventoId, @PathVariable String compraId){
+        Evento eventoAtualizado = eventoService.removerCompra(eventoId, compraId);
+
+        EventoResponseDTO response = mapper.toResponse(eventoAtualizado);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

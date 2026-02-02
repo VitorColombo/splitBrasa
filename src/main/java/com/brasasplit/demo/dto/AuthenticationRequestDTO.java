@@ -1,6 +1,6 @@
 package com.brasasplit.demo.dto;
 
-public record AuthenticationRequest(
+public record AuthenticationRequestDTO(
         String email,
         String senha
 ) { }

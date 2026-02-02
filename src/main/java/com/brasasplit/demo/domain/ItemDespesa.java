@@ -1,18 +1,18 @@
 package com.brasasplit.demo.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.brasasplit.demo.domain.enums.TipoDespesa;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ItemDespesa extends BaseEntity {
-    private String descricao;
-    private String pagoPor;
+    private String nome;
     private BigDecimal valor;
+    private Integer quantidade;
+    private TipoDespesa tipo;
 }

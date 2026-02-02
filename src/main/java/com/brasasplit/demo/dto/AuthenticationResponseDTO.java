@@ -1,5 +1,5 @@
 package com.brasasplit.demo.dto;
 
-public record AuthenticationResponse(
+public record AuthenticationResponseDTO(
         String token
 ) {}
