@@ -8,11 +8,11 @@ import java.util.List;
 
 @Builder
 public record EventoResponseDTO(
-    String id,
-    String nome,
-    LocalDate data,
-    String local,
-    String organizadorId,
-    List<ParticipanteResponseDTO> participantes,
-    List<CompraResponseDTO> compras
+        String id,
+        String nome,
+        LocalDate data,
+        String local,
+        String organizadorId,
+        List<ParticipanteResponseDTO> participantes,
+        List<CompraResponseDTO> compras
 ) {}

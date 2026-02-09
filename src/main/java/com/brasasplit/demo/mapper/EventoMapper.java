@@ -51,7 +51,7 @@ public class EventoMapper {
     }
 
     // Auxiliar Listas
-    private List<ItemDespesa> toItemDespesaList(List<ItemDespesaRequestDTO> dtos) {
+    public List<ItemDespesa> toItemDespesaList(List<ItemDespesaRequestDTO> dtos) {
         return dtos.stream()
                 .map(this::toItemDespesaDomain)
                 .toList();
@@ -87,13 +87,22 @@ public class EventoMapper {
     }
 
     // Entidade Participante -> DTO Response
-    public  ParticipanteResponseDTO toParticipanteResponse(Participante participante){
+    public ParticipanteResponseDTO toParticipanteResponse(Participante participante){
         return ParticipanteResponseDTO.builder()
                 .id(participante.getId())
                 .usuarioId(participante.getUsuarioId())
                 .nome(participante.getNome())
                 .bebeAlcool(participante.getBebeAlcool())
                 .comeCarne(participante.getComeCarne())
+                .build();
+    }
+
+    public Participante toParticipanteDomain(ParticipanteRequestDTO dto) {
+        return Participante.builder()
+                .nome(dto.nome())
+                .usuarioId(dto.usuarioId())
+                .bebeAlcool(dto.bebeAlcool())
+                .comeCarne(dto.comeCarne())
                 .build();
     }
 }

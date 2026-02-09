@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record CompraRequestDTO(
@@ -16,6 +18,8 @@ public record CompraRequestDTO(
         String pagadorId,
         @Schema(example = "https://s3.aws.com/minha-nota.jpg", description = "URL do comprovante da compra")
         String comprovanteUrl,
+        @Schema(description = "Data da compra no formato AAAA-MM-DD, null = hoje", example = "2024-06-15")
+        LocalDateTime dataCompra,
         @NotEmpty(message = "A compra deve ter pelo menos 1 item")
         @Valid
         List<ItemDespesaRequestDTO> itens

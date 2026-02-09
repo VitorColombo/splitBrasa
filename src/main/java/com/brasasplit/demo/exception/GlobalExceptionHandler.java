@@ -1,6 +1,5 @@
-package com.brasasplit.demo.config;
+package com.brasasplit.demo.exception;
 
-import com.brasasplit.demo.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
