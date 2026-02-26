@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice //informa pro spring que essa classe vai tratar excecoes globalmente
+@RestControllerAdvice // informa pro spring que essa classe vai tratar excecoes globalmente
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class) //pega pra tratar os erros de validacao nos DTOs
+    @ExceptionHandler(MethodArgumentNotValidException.class) // pega pra tratar os erros de validacao nos DTOs
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
 
@@ -49,5 +49,15 @@ public class GlobalExceptionHandler {
         error.put("detalhe", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(org.springframework.dao.OptimisticLockingFailureException.class)
+    public ResponseEntity<Map<String, String>> handleOptimisticLockingFailure(
+            org.springframework.dao.OptimisticLockingFailureException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("erro", "Erro de concorrencia. Tente novamente.");
+        error.put("detalhe", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 }

@@ -3,6 +3,7 @@ package com.brasasplit.demo.domain;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
@@ -27,4 +28,6 @@ public class Evento extends BaseEntity {
     private List<Participante> participantes = new ArrayList<>();
     @Builder.Default
     private List<Compra> compras = new ArrayList<>();
+    @Version
+    private Long version;
 }
